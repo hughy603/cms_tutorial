@@ -11,12 +11,15 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
-
 import environ
+
+gettext = lambda s: s
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = environ.Path(__file__) - 2
 env = environ.Env()
+PROJECT = "cms_tutorial"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -43,23 +46,26 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cms',  # django CMS itself
-    'treebeard',  # utilities for implementing a tree
-    'menus',  # helper for model independent hierarchical website navigation
-    'sekizai',  # for JavaScript and CSS management
-
-    # Added these for manual install tutorial
+    'cms',
+    'menus',
+    'sekizai',
+    'treebeard',
+    'djangocms_text_ckeditor',
+    'djangocms_style',
+    'djangocms_column',
+    'filer',
+    'easy_thumbnails',
+    'cmsplugin_filer_image',
+    'cmsplugin_filer_file',
+    'cmsplugin_filer_folder',
+    'cmsplugin_filer_teaser',
+    'cmsplugin_filer_utils',
+    'cmsplugin_filer_video',
     'djangocms_googlemap',
     'djangocms_inherit',
     'djangocms_link',
-    'djangocms_snippet',
-
-    # filer is an alternative to the cms apps
-    # 'django_filer',
-    'djangocms_file',
-    'djangocms_picture',
-    'djangocms_teaser',
-    'djangocms_video',
+    'reversion',
+    'cms_tutorial'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -84,8 +90,7 @@ ROOT_URLCONF = 'cms_tutorial.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [str(BASE_DIR("templates")), ],
-        'APP_DIRS': True,
+        'DIRS': [str(BASE_DIR(PROJECT, "templates")), ],
         'OPTIONS': {
             'debug': DEBUG,
             'context_processors': [
@@ -99,6 +104,11 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'sekizai.context_processors.sekizai',
                 'cms.context_processors.cms_settings',
+            ],
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+                'django.template.loaders.eggs.Loader'
             ],
         },
     },
@@ -158,16 +168,42 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
-STATIC_ROOT = str(BASE_DIR("static"))
-
+STATIC_ROOT = str(BASE_DIR(PROJECT, "static"))
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = str(BASE_DIR("media"))
-
+MEDIA_ROOT = str(BASE_DIR(PROJECT, "media"))
 MEDIA_URL = "/media/"
 
 # ========= Django CMS Specific Settings =============
 CMS_TEMPLATES = (
-    ('template_1.html', 'Template One'),
-    ('template_2.html', 'Template Two'),
+    # Customize this
+    ('page.html', 'Page'),
+    ('feature.html', 'Page with Feature')
 )
+
+
+CMS_LANGUAGES = {
+    # Customize this
+    'default': {
+        'public': True,
+        'redirect_on_fallback': True,
+        'hide_untranslated': False,
+    },
+    1: [
+        {
+            'code': 'en-us',
+            'name': gettext('en-us'),
+            'public': True,
+            'redirect_on_fallback': True,
+            'hide_untranslated': False,
+        },
+    ],
+}
+
+THUMBNAIL_PROCESSORS = (
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
+    'easy_thumbnails.processors.filters'
+)
+
