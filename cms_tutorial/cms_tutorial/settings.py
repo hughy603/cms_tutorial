@@ -65,7 +65,9 @@ INSTALLED_APPS = [
     'djangocms_inherit',
     'djangocms_link',
     'reversion',
-    'cms_tutorial'
+    'cms_tutorial',
+    'polls',
+    'polls_cms_integration',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -177,8 +179,8 @@ MEDIA_URL = "/media/"
 # ========= Django CMS Specific Settings =============
 CMS_TEMPLATES = (
     # Customize this
-    ('page.html', 'Page'),
-    ('feature.html', 'Page with Feature')
+    ('feature.html', 'Page with Feature'),
+    #('page.html', 'Page'),
 )
 
 
